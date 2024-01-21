@@ -5,16 +5,14 @@
 
 (defun byte-distance (byte1 byte2)
   "Iterate through the xor of the two bytes, shifting each
-  time. If the result is odd, then we can count it as a
-  differing bit"
+  time. Use 1 as a mask and add the value of the last bit to
+  the counter - it will be 1 if they were different, 0 if they were not."
   (labels ((_ (xor i acc)
               (if (zerop i)
                 acc
                 (_ (ash xor -1)
                    (1- i)
-                   (if (= 1 (logand xor 1))
-                     (1+ acc)
-                     acc)))))
+                   (+ acc (logand xor 1))))))
     (_ (logxor byte1 byte2) 8 0)))
 
 (defun distance (str1 str2)
